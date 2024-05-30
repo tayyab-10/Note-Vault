@@ -1,7 +1,9 @@
 NoteVault
+
 NoteVault is a modern, cloud-based application designed to help you securely store and manage your personal notes. Built with the MERN stack (MongoDB, Express, React, Node.js), NoteVault provides a seamless experience for creating, editing, and accessing your notes from anywhere.
 
 Features
+
 User Authentication: Secure sign-up and login functionality to protect your notes.
 Create and Edit Notes: Easily create new notes and edit existing ones with a rich text editor.
 Cloud Storage: All notes are stored in the cloud, ensuring that your data is accessible from any device.
@@ -10,6 +12,7 @@ Search Functionality: Quickly find notes using the integrated search feature.
 Real-Time Updates: Enjoy real-time updates and synchronization across all your devices.
 
 Technologies Used
+
 MongoDB: A NoSQL database for storing notes and user information.
 Express: A minimal and flexible Node.js web application framework.
 React: A JavaScript library for building user interfaces.
@@ -18,10 +21,12 @@ Getting Started
 To get a local copy up and running, follow these simple steps.
 
 Prerequisites
+
 Node.js
 MongoDB
 
 Installation
+
 Clone the repository:
 
 sh

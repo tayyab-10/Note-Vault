@@ -1,8 +1,11 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../Models/User');
+
+const JWT_SECRET = 'Never Fall in love at your Early twenties'; // Replace with your actual secret key
 
 // Creating a user using the POST req "/api/auth"
 router.post(
@@ -38,7 +41,17 @@ router.post(
 
             // Save the user to the database
             await user.save();
-            res.json({ message: 'User created successfully!' });
+
+            // Generate a JWT
+            const payloaddata = {
+                user: {
+                    id: user.id
+                }
+            };
+            const token = jwt.sign(payloaddata, JWT_SECRET, { expiresIn: '1h' });
+
+            // Return the JWT to the client
+            res.json({ token });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -46,9 +59,3 @@ router.post(
 );
 
 module.exports = router;
-
-
-// const user = new User(req.body);
-// user.save()
-//     .then(() => res.json({ message: 'User created successfully!' }))
-//     .catch(err => res.status(400).json({ error: err.message }));

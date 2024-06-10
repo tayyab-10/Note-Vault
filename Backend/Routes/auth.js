@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../Models/User');
 
-const JWT_SECRET = 'Never Fall in love at your Early twenties'; // Replace with your actual secret key
+const JWT_SECRET = process.env.JWT_SECRET || 'Never Fall in love at your Early twenties'; // Replace with your actual secret key
 
-// Creating a user using the POST req "/api/auth"
+// Creating a user using the POST req "/api/auth/signup"
 router.post(
-    '/',
+    '/signup',
     [
         // Validation rules
         body('name').isLength({ min: 5 }).withMessage('Name must be at least 5 characters long'),
@@ -43,12 +43,55 @@ router.post(
             await user.save();
 
             // Generate a JWT
-            const payloaddata = {
+            const payload = {
                 user: {
                     id: user.id
                 }
             };
-            const token = jwt.sign(payloaddata, JWT_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+
+            // Return the JWT to the client
+            res.json({ token });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+);
+
+// Authenticate a user using the POST req "/api/auth/login"
+router.post(
+    '/login',
+    [
+        body('email').isEmail().withMessage('Email is not valid'),
+        body('password').exists().withMessage('Password cannot be blank')
+    ],
+    async (req, res) => {
+        // Handle validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { email, password } = req.body;
+
+        try {
+            let user = await User.findOne({ email });
+            if (!user) {
+                return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+            }
+
+            const passwordCompare = await bcrypt.compare(password, user.password);
+            if (!passwordCompare) {
+                return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+            }
+
+            // Generate a JWT
+            const payload = {
+                user: {
+                    id: user.id
+                }
+            };
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
 
             // Return the JWT to the client
             res.json({ token });

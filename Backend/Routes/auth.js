@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../Models/User');
-
+const fetchuser = require("../Middleware/fetchuser")
 const JWT_SECRET = process.env.JWT_SECRET || 'Never Fall in love at your Early twenties'; // Replace with your actual secret key
 
 // Creating a user using the POST req "/api/auth/signup"
@@ -101,4 +101,16 @@ router.post(
     }
 );
 
+
+//Route 3: Get loggedin user details
+
+router.post('/getuser', fetchuser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId).select('-password');
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 module.exports = router;

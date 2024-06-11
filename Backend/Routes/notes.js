@@ -95,5 +95,28 @@ router.put('/updateNote/:id',
         }
 
     })
+
+
+//Route 4: Delete an existing Note 
+router.delete('/deleteNote/:id', fetchuser, async (req, res) => {
+    try {
+        let note = await Notes.findById(req.params.id);
+        if (!note) {
+            return res.status(404).send("Note not found");
+        }
+
+        if (note.user.toString() !== req.user.id) {
+            return res.status(401).send("Not Authorized");
+        }
+
+        await Notes.findByIdAndDelete(req.params.id);
+
+        res.json({ message: "Note deleted successfully" });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send({ error: "Internal Server Error" });
+    }
+});
+
 module.exports = router;
 

@@ -10,7 +10,7 @@ app.use(express.json());
 
 //avialable routes 
 app.use('/api/auth', require('./Routes/auth'))
-// app.use('/api/notes', require('./routes/notes'))
+app.use('/api/notes', require('./Routes/notes'))
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

@@ -102,7 +102,7 @@ router.post(
 );
 
 
-//Route 3: Get loggedin user details
+//Route 3: Get loggedin user details   --login required
 
 router.post('/getuser', fetchuser, async (req, res) => {
     try {

@@ -1,22 +1,29 @@
 const mongoose = require('mongoose');
 
+const { Schema } = mongoose;
+
 const NotesSchema = new Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId, // This is a foreign key
+        ref: 'user',
+        required: true
+    },
     title: {
-        type: string,
+        type: String,
         required: true
     },
     description: {
-        type: string,
+        type: String,
         required: true
     },
     tag: {
-        type: string,
+        type: String,
         default: "General"
     },
     date: {
-        type: date,
-        default: date.now
+        type: Date,
+        default: Date.now
     }
-})
+});
 
-module.exports = mongoose.Model('notes', NotesSchema);
+module.exports = mongoose.model('notes', NotesSchema); // Correct usage of mongoose.model  This would create a collection name notes in the mongodb compass 

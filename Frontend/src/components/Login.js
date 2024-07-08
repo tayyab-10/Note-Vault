@@ -1,84 +1,73 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import userContext from '../context/notes/userContext';
+import { useNavigate } from 'react-router-dom';
+import bgImage from "../Assets/bg1.jpg";
+import { GoogleOutlined } from '@ant-design/icons';
 
 const Login = () => {
-  const { signUp } = useContext(userContext); 
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
-  const [isSignup, setIsSignup] = useState(false);
-  const [user, setUser] = useState({ name: "", password: "", email: "" });
-
-  const handleSignupClick = () => {
-    setIsSignup(true);
-  };
-
-  const handleLoginClick = () => {
-    setIsSignup(false);
-  };
-
-  const onFinish = (values) => {
-    if (isSignup) {
-      signUp(user.username, user.password, user.email);
-    } else {
-      // Handle login logic
-      console.log('Logging in with:', values);
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: credentials.email, password: credentials.password })
+      });
+      const json = await response.json();
+      
+      if (response.ok) {
+        // Save the auth token and redirect
+        localStorage.setItem('token', json.token);
+        navigate("/home");
+      
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred. Please try again later.");
     }
   };
 
   const onChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const onFinish = () => {
+    handleLogin();
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-danger">
-      <div className="card shadow-lg p-4" style={{ maxWidth: '20rem' }}>
-        <div className="d-flex justify-content-between mb-4 mx-4">
-          <Button
-            type="primary"
-            htmlType="button"
-            className="btn w-50 mx-1"
-            onClick={handleLoginClick}
-            disabled={!isSignup}
-          >
-            Log in
-          </Button>
-          <Button
-            type="primary"
-            htmlType="button"
-            className="btn w-50 mx-1"
-            onClick={handleSignupClick}
-            disabled={isSignup}
-          >
-            Signup
-          </Button>
-        </div>
+    <div style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover',
+    backgroundPosition: 'center',}}className="d-flex align-items-center justify-content-center min-vh-100 bg-danger">
+      <div className="card shadow-lg p-4 mt-4" style={{ maxWidth: '23rem' }}>
+      <h5 className="text-center mb-4 fw-normal">Login</h5>
+        <Button type="default" icon={<GoogleOutlined />} className="mb-3 w-100">
+          Sign up with Google
+        </Button>
+        <div className="separator text-center" style={{ display: "flex", alignItems: "center", justifyContent: "center",fontSize: "13px", color: "rgba(102, 102, 102, 1)"}}>
+  <hr className="left-line" style={{ flex: 1 }}/>
+  <span style={{ margin: "2px 8px" }}>Or</span>
+  <hr className="right-line" style={{ flex: 1 }}/>
+</div>
         <Form
-          name={isSignup ? "signup_form" : "normal_login"}
+          name="normal_login"
           initialValues={{ remember: true }}
           onFinish={onFinish}
         >
-          {isSignup && (
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: 'Please input your Email!' }]}
-            >
-              <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="Email"
-                name="email"
-                onChange={onChange}
-              />
-            </Form.Item>
-          )}
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your Email!' }]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Username"
-              name="username"
+              placeholder="Email"
+              name="email"
               onChange={onChange}
             />
           </Form.Item>
@@ -86,35 +75,31 @@ const Login = () => {
             name="password"
             rules={[{ required: true, message: 'Please input your Password!' }]}
           >
-            <Input.Password
+            <Input
               prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
               placeholder="Password"
               name="password"
               onChange={onChange}
             />
           </Form.Item>
-
-          {!isSignup && (
-            <Form.Item>
-              <div className="d-flex justify-content-between align-items-center">
-                <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-                <a className="login-form-forgot" href="">
-                  Forgot password
-                </a>
-              </div>
-            </Form.Item>
-          )}
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="btn btn-primary w-100">
-              {isSignup ? 'Sign up' : 'Log in'}
+            <div className="d-flex justify-content-between align-items-center">
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
+              <a className="login-form-forgot" href="">
+                Forgot password
+              </a>
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" className="btn btn-primary w-100 text-center">
+              Log in
             </Button>
-            {!isSignup && (
-              <div className="mt-3 text-center">
-                Or <a href="">register now!</a>
-              </div>
-            )}
+            <div className="mt-3 text-center">
+              Not a member ?<a href="/signup">register now!</a>
+            </div>
           </Form.Item>
         </Form>
       </div>

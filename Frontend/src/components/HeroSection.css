@@ -1,0 +1,32 @@
+.hero-container {
+    background-image: url('../Assets/bg-hero.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 97vh;
+    margin: 0;
+    padding: 0;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .text-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .animated-word {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    margin: 0 5px;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }

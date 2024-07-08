@@ -36,22 +36,26 @@ const Noteitem = (props) => {
   };
 
   return (
-    <div className="col-md-3">
-      <div className="card my-3">
-        <div className="card-body">
-          <div className="d-flex align-items-center">
-            <h5 className="card-title">{note.title}</h5>
-            <i className="far fa-trash-alt mx-2" onClick={() => deleteNote(note._id)}></i>
-            <i className="far fa-edit mx-2" onClick={handleEditClick} data-bs-toggle="modal" data-bs-target={`#editModal-${note._id}`}></i>
+    <>  
+      <div className="note-item">
+      <div className="note-card shadow-sm">
+        <div className="note-card-body">
+          <div className="note-card-header d-flex align-items-center justify-content-between">
+            <h5 className="note-card-title">{note.title}</h5>
+            <div className="note-card-actions">
+              <i className="far fa-edit mx-2" onClick={handleEditClick} data-bs-toggle="modal" data-bs-target={`#editModal-${note._id}`}></i>
+              <i className="far fa-trash-alt mx-2" onClick={() => deleteNote(note._id)}></i>
+            </div>
           </div>
-          <p className="card-text">{note.description}</p>
+          <p className="note-card-text">{note.description}</p>
           <span className="badge bg-primary">{note.tag}</span>
         </div>
       </div>
+      </div>
 
-      {/* Modal for Edit */}
-      <div className={`modal fade ${showModal ? 'show' : ''}`} id={`editModal-${note._id}`} tabIndex="-1" aria-labelledby={`editModalLabel-${note._id}`} aria-hidden="true">
-        <div className="modal-dialog">
+    {/* Modal for Edit */}
+    <div className={`modal fade ${showModal ? 'show' : ''}`} id={`editModal-${note._id}`} tabIndex="-1" aria-labelledby={`editModalLabel-${note._id}`} aria-hidden="true">
+        <div className="modal-dialog" style={{marginTop:"6rem"}}>
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id={`editModalLabel-${note._id}`}>Edit Note</h5>
@@ -81,8 +85,11 @@ const Noteitem = (props) => {
         </div>
       </div>
       {/* End Modal */}
-    </div>
+      </>
+
+
+
   );
-}
+};
 
 export default Noteitem;

@@ -20,10 +20,11 @@ router.post(
         body('email').isEmail().withMessage('Email is not valid')
     ],
     async (req, res) => {
+        let success=false;
         // Handle validation errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ success,errors: errors.array() });
         }
 
         // Hash and salt the password
@@ -49,11 +50,11 @@ router.post(
                 }
             };
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-
+success=true;
             // Return the JWT to the client
-            res.json({ token });
+            res.json({success, token });
         } catch (err) {
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ success,error: err.message });
         }
     }
 );

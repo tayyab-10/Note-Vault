@@ -1,8 +1,7 @@
-
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
-const Notes = require('../Models/Note');
+const Notes = require('../Models/Notes');
 const fetchuser = require('../Middleware/fetchuser');
 
 // Add a note using POST req "/api/notes/addNote"
@@ -120,3 +119,4 @@ router.delete('/deleteNote/:id', fetchuser, async (req, res) => {
 });
 
 module.exports = router;
+
